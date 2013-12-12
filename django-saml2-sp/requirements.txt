@@ -1,0 +1,2 @@
+M2Crypto>=0.20.1
+BeautifulSoup>=3.2.0

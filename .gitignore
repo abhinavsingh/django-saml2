@@ -1,0 +1,10 @@
+*.pyc
+*.sqlite
+.project
+.pydevproject
+*.log
+.coverage
+cover
+dist
+django_saml2_sp.egg-info
+django_saml2_idp.egg-info

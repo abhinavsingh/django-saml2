@@ -1,0 +1,9 @@
+{% extends "saml2sp/base.html" %}
+
+{% block content %}
+You shouldn't be able to see this page without first logging in.
+{{ session }}
+<hr>
+{#XXX: I'd rather use 'logout_url' here, but I haven't figured out how to override that view yet. #}
+<a href="{% url sso_single_logout %}">Logout</a>
+{% endblock content %}

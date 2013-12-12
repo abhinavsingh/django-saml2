@@ -1,0 +1,12 @@
+{% extends "saml2sp/base.html" %}
+
+{% block content %}
+<div id="sso_idp_selection_instruction">
+Select your Identity Provider:
+</div>
+<form action="" method="POST">{% csrf_token %}
+{{ form }}
+<br />
+<input type="submit" value="Select" />
+</form>
+{% endblock content %}

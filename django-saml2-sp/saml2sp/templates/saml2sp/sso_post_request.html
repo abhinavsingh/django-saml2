@@ -1,0 +1,13 @@
+{% extends "saml2sp/base.html" %}
+
+{% block content %}
+<div id="sso_continue_to_idp_instruction">
+{{ next }}<br />
+Click Continue to sign in at the Identity Provider.
+</div>
+<form method="POST" action="{{ request_url }}">
+   <input type="hidden" name="SAMLRequest" value="{{ request }}" />
+   <input type="hidden" name="RelayState" value="{{ token }}" />
+   <input type="submit" value="Continue" />
+ </form>
+{% endblock content %}

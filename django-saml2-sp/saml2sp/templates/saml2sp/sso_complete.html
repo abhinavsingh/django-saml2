@@ -1,0 +1,23 @@
+{% extends "saml2sp/base.html" %}
+
+{% block content %}
+Welcome, {{ user.username }}!<br />
+The Identity Provider returned this assertion:<br />
+<textarea rows="10" cols="80">
+{{ assertion }}
+</textarea><br />
+{% if attributes %}
+This assertion includes these attributes:
+<ul>
+{% for name, value in attributes.items %}
+<li>{{ name }}: {{ value }}
+{% endfor %}
+</ul>
+{% else %}
+This assertion included no attributes.
+{% endif %}
+<hr>
+You are now signed in at the Service Provider.<br />
+You may continue to your original destination here:<br />
+<a href="{{ sso_destination }}">{{ sso_destination }}</a>
+{% endblock content %}
