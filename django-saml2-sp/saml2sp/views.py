@@ -23,12 +23,12 @@ import xml_signing
 def xml_response(request, template, tv):
     return render_to_response(template, tv, mimetype="application/xml")
 
-
 #TODO: Pull IDP choices from a model. For now, just use the one from the settings.
 IDP_CHOICES = (
     (saml2sp_settings.SAML2SP_IDP_REQUEST_URL,
      saml2sp_settings.SAML2SP_IDP_REQUEST_URL),
 )
+
 class IdpSelectionForm(forms.Form):
     idp = forms.ChoiceField(choices=IDP_CHOICES)
 
@@ -126,7 +126,7 @@ def sso_login(request, selected_idp_url):
     sso_destination = request.GET.get('next', None)
     request.session['sso_destination'] = sso_destination
     parameters = {
-        'ACS_URL': saml2sp_settings.SAML2SP_ACS_URL,
+        'ACS_URL': get_acs_url(request),
         'DESTINATION': selected_idp_url,
         'AUTHN_REQUEST_ID': base.get_random_id(),
         'ISSUE_INSTANT': base.get_time_string(),
@@ -208,7 +208,7 @@ def descriptor(request):
     """
     Replies with the XML Metadata SPSSODescriptor.
     """
-    acs_url = saml2sp_settings.SAML2SP_ACS_URL
+    acs_url = get_acs_url(request)
     entity_id = _get_entity_id(request)
     pubkey = xml_signing.load_cert_data(saml2sp_settings.SAML2SP_CERTIFICATE_FILE)
     tv = {
@@ -217,3 +217,7 @@ def descriptor(request):
         'cert_public_key': pubkey,
     }
     return xml_response(request, 'saml2sp/spssodescriptor.xml', tv)
+
+def get_acs_url(request):
+    url = 'http://%s%s' % (request.META['HTTP_HOST'], saml2sp_settings.SAML2SP_ACS_URL)
+    return url
