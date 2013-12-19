@@ -96,6 +96,7 @@ def _get_user_from_assertion(assertion):
     Returns the user object that was created.
     """
     email = _get_email_from_assertion(assertion)
+    
     try:
         user = User.objects.get(email=email)
     except:
@@ -105,12 +106,17 @@ def _get_user_from_assertion(assertion):
             saml2sp_settings.SAML2SP_SAML_USER_PASSWORD
         )
 
+    # We already have the user object
+    # Setup backend so that we can skip call to authenticate
+    # This should also help us getting rid of SAML2SP_SAML_USER_PASSWORD settings
+    user.backend = 'django.contrib.auth.backends.ModelBackend'
+    
     #NOTE: Login will fail if the user has changed his password via the local
     # account. This actually is a good thing, I think.
-    user = authenticate(username=user.username,
-                        password=saml2sp_settings.SAML2SP_SAML_USER_PASSWORD)
-    if user is None:
-        raise Exception('Unable to login user "%s" with SAML2SP_SAML_USER_PASSWORD' % email)
+    #user = authenticate(username=user.username, password=user.password)
+    #if user is None:
+    #    raise Exception('Unable to login user "%s" with SAML2SP_SAML_USER_PASSWORD' % email)
+    
     return user
 
 def sso_login(request, selected_idp_url):
@@ -153,7 +159,6 @@ def sso_idp_select(request):
     return render_to_response('saml2sp/sso_idp_selection.html', tv,
         context_instance=RequestContext(request))
 
-
 @csrf_view_exempt
 def sso_response(request):
     """
@@ -167,6 +172,7 @@ def sso_response(request):
     user = _get_user_from_assertion(assertion)
     attributes = _get_attributes_from_assertion(assertion)
     login(request, user)
+    
     tv = {
         'user': user,
         'assertion': assertion,
@@ -182,7 +188,7 @@ def sso_test(request):
     so that we can kick-off the SAML conversation.
     """
     tv = {
-        'session': request.session,
+        'request': request,
     }
     return render_to_response('saml2sp/sso_test.html', tv)
 
