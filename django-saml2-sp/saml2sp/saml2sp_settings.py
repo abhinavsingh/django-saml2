@@ -3,7 +3,12 @@ from django.conf import settings
 try:
     SAML2SP_ACS_URL = settings.SAML2SP_ACS_URL
 except:
-    SAML2SP_ACS_URL = 'http://127.0.0.1:9000/sp/acs/'
+    SAML2SP_ACS_URL = '/sp/acs/'
+
+try:
+    SAML2SP_ACS_PROTO = settings.SAML2SP_ACS_PROTO
+except:
+    SAML2SP_ACS_PROTO = 'http'
 
 try:
     SAML2SP_ENTITY_ID = settings.SAML2SP_ENTITY_ID

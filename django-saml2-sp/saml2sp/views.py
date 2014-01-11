@@ -219,5 +219,5 @@ def descriptor(request):
     return xml_response(request, 'saml2sp/spssodescriptor.xml', tv)
 
 def get_acs_url(request):
-    url = 'http://%s%s' % (request.META['HTTP_HOST'], saml2sp_settings.SAML2SP_ACS_URL)
+    url = '%s://%s%s' % (saml2sp_settings.SAML2SP_ACS_PROTO, request.META['HTTP_HOST'], saml2sp_settings.SAML2SP_ACS_URL)
     return url
